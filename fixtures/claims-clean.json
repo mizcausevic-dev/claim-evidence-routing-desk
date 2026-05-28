@@ -1,0 +1,34 @@
+{
+  "claims": [
+    {
+      "id": "CLM-5001",
+      "insurer": "Evergreen Assurance",
+      "memberSegment": "Commercial HMO",
+      "serviceLine": "Outpatient surgery reimbursement",
+      "owner": "Claims Resolution",
+      "status": "ON_TRACK",
+      "workflowHealthy": true,
+      "daysToDecision": 4,
+      "packet": "Surgery evidence packet",
+      "excerpt": "Claim packet is complete and in payer review.",
+      "nextAction": "Hold for payer decision."
+    }
+  ],
+  "packets": [
+    {
+      "id": "PKT-900",
+      "claimId": "CLM-5001",
+      "insurer": "Evergreen Assurance",
+      "owner": "Claims Resolution",
+      "domain": "PAYER_RULE",
+      "kind": "Authorization",
+      "severity": "low",
+      "status": "RESOLVED",
+      "scope": "Outpatient surgery reimbursement",
+      "principal": "Authorization letter",
+      "message": "Authorization packet is complete and closed.",
+      "openedAt": "2026-05-26T08:00:00Z",
+      "dueAt": "2026-05-30T17:00:00Z"
+    }
+  ]
+}

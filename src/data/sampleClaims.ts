@@ -1,0 +1,196 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+import type { ClaimEvidenceExport } from "../types.js";
+
+export const sampleClaimEvidencePayload: ClaimEvidenceExport = {
+  claims: [
+    {
+      id: "CLM-1042",
+      insurer: "Meridian Health Plan",
+      memberSegment: "Commercial PPO",
+      serviceLine: "Advanced imaging reimbursement",
+      owner: "Appeals Operations",
+      status: "AT_RISK",
+      workflowHealthy: false,
+      daysToDecision: 2,
+      packet: "Clinical necessity addendum",
+      excerpt: "Original denial cited incomplete imaging history and missing peer-review note.",
+      nextAction: "Route the clinical addendum and coding note into the appeal packet before the payer deadline."
+    },
+    {
+      id: "CLM-2077",
+      insurer: "Harbor Mutual",
+      memberSegment: "Employer self-funded",
+      serviceLine: "Physical therapy extension",
+      owner: "Utilization Review",
+      status: "ON_TRACK",
+      workflowHealthy: true,
+      daysToDecision: 5,
+      packet: "Therapy continuation packet",
+      excerpt: "Clinical packet is complete; only payer confirmation is pending.",
+      nextAction: "Keep the packet warm and hold for payer acknowledgment."
+    },
+    {
+      id: "CLM-3109",
+      insurer: "NovaCare Admin",
+      memberSegment: "Medicare Advantage",
+      serviceLine: "Infusion reimbursement appeal",
+      owner: "Revenue Integrity",
+      status: "AT_RISK",
+      workflowHealthy: false,
+      daysToDecision: 1,
+      packet: "Appeal and coding variance packet",
+      excerpt: "Claim reopened after coding mismatch and missing infusion timeline appendix.",
+      nextAction: "Repair the coding variance explanation and finalize the appeal evidence bundle."
+    }
+  ],
+  packets: [
+    {
+      id: "PKT-001",
+      claimId: "CLM-1042",
+      insurer: "Meridian Health Plan",
+      owner: "Clinical Appeals RN",
+      domain: "CLINICAL",
+      kind: "Clinical",
+      severity: "high",
+      status: "OPEN",
+      scope: "Advanced imaging reimbursement",
+      principal: "Medical-necessity note",
+      message: "Clinical addendum is still missing the peer-review attachment referenced in the payer denial.",
+      openedAt: "2026-05-24T08:00:00Z",
+      dueAt: "2026-05-30T18:00:00Z"
+    },
+    {
+      id: "PKT-002",
+      claimId: "CLM-1042",
+      insurer: "Meridian Health Plan",
+      owner: "Coding Review",
+      domain: "CODING",
+      kind: "Coding",
+      severity: "medium",
+      status: "OPEN",
+      scope: "Advanced imaging reimbursement",
+      principal: "Modifier justification",
+      message: "Coding note does not yet reconcile the denied modifier with the resubmission packet.",
+      openedAt: "2026-05-26T12:00:00Z",
+      dueAt: "2026-05-30T18:00:00Z"
+    },
+    {
+      id: "PKT-003",
+      claimId: "CLM-3109",
+      insurer: "NovaCare Admin",
+      owner: "Revenue Integrity",
+      domain: "APPEAL",
+      kind: "Appeal",
+      severity: "high",
+      status: "OPEN",
+      scope: "Infusion reimbursement appeal",
+      principal: "Appeal narrative",
+      message: "Appeal packet is missing the final chronology tying infusion dates to the coding variance.",
+      openedAt: "2026-05-23T09:30:00Z",
+      dueAt: "2026-05-29T21:00:00Z"
+    },
+    {
+      id: "PKT-004",
+      claimId: "CLM-3109",
+      insurer: "NovaCare Admin",
+      owner: "Eligibility Desk",
+      domain: "ELIGIBILITY",
+      kind: "Eligibility",
+      severity: "medium",
+      status: "OPEN",
+      scope: "Infusion reimbursement appeal",
+      principal: "Coverage window",
+      message: "Member coverage window needs reattached proof after the reopened appeal.",
+      openedAt: "2026-05-25T16:00:00Z",
+      dueAt: "2026-05-29T21:00:00Z"
+    },
+    {
+      id: "PKT-005",
+      claimId: "CLM-2077",
+      insurer: "Harbor Mutual",
+      owner: "Utilization Review",
+      domain: "PAYER_RULE",
+      kind: "Authorization",
+      severity: "low",
+      status: "RESOLVED",
+      scope: "Physical therapy extension",
+      principal: "Continuation authorization",
+      message: "Continuation authorization packet was accepted on the last payer touchpoint.",
+      openedAt: "2026-05-22T10:00:00Z",
+      dueAt: "2026-05-28T17:00:00Z"
+    }
+  ]
+};
+
+export const claimLanePackets = [
+  {
+    id: "intake-lane",
+    lane: "Claim intake and packet triage",
+    owner: "Revenue Cycle Operations",
+    focus: "Missing packet capture and payer-ready claim context",
+    status: "RED",
+    nextAction: "Repair the two at-risk packets before denial posture hardens.",
+    note: "The intake desk should surface which claims are missing proof, not just ticket counts."
+  },
+  {
+    id: "clinical-lane",
+    lane: "Clinical evidence routing",
+    owner: "Clinical Appeals RN",
+    focus: "Medical necessity notes and service-line justification",
+    status: "YELLOW",
+    nextAction: "Close the peer-review attachment gap for CLM-1042.",
+    note: "Clinical packets need owner-safe routing before they become payer exceptions."
+  },
+  {
+    id: "coding-lane",
+    lane: "Coding and denial defense",
+    owner: "Coding Review",
+    focus: "Modifier evidence and variance explanation",
+    status: "YELLOW",
+    nextAction: "Complete coding reconciliation for the imaging resubmission.",
+    note: "Coding drift is visible before it contaminates the appeal bundle."
+  },
+  {
+    id: "appeal-lane",
+    lane: "Appeal posture",
+    owner: "Appeals Operations",
+    focus: "Narrative completeness and denial-safe packet handoff",
+    status: "RED",
+    nextAction: "Finalize the chronology and route the NovaCare appeal packet to review.",
+    note: "Appeal packets must stay readable to both internal operators and payer reviewers."
+  }
+];
+
+export const appealPackets = [
+  {
+    packetId: "APR-14",
+    lane: "Meridian imaging appeal",
+    owner: "Appeals Operations",
+    completenessScore: 58,
+    status: "RED",
+    blocker: "Clinical attachment still missing",
+    launchWindowHours: 18,
+    decisionNote: "Do not submit until the peer-review note and coding variance explanation are bundled together."
+  },
+  {
+    packetId: "APR-18",
+    lane: "Harbor continuation packet",
+    owner: "Utilization Review",
+    completenessScore: 91,
+    status: "GREEN",
+    blocker: "No active blocker",
+    launchWindowHours: 42,
+    decisionNote: "Packet is safe for payer confirmation and operator follow-up."
+  },
+  {
+    packetId: "APR-22",
+    lane: "NovaCare infusion appeal",
+    owner: "Revenue Integrity",
+    completenessScore: 63,
+    status: "YELLOW",
+    blocker: "Coverage window proof is stale",
+    launchWindowHours: 12,
+    decisionNote: "Appeal can clear if eligibility evidence is repaired in the current review cycle."
+  }
+];
